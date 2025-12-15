@@ -40,6 +40,8 @@ def save_user_info_func(key: str, value: str):
     # 因为那里才能访问到具体的 self.memory 对象
     return f"已将用户 {key} 更新为 {value}"
 
+registry = ToolRegistry()
+
 registry.register(
     func=save_user_info_func,
     name="save_user_info",

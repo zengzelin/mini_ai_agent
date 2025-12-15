@@ -19,17 +19,26 @@ class MemoryManager:
         return {}
 
     def save_profile(self):
-        # 简单实现：读取全部，更新当前用户，写回
+        # 1. 先尝试读取现有的，防止覆盖其他用户的数据
         all_data = {}
         if os.path.exists(self.profile_path):
             try:
                 with open(self.profile_path, 'r', encoding='utf-8') as f:
                     all_data = json.load(f)
             except:
-                pass
+                print("[Memory] 读取旧文件失败，将创建新文件。")
+                all_data = {}
+
+        # 2. 更新当前用户的数据
         all_data[self.user_id] = self.user_profile
-        with open(self.profile_path, 'w', encoding='utf-8') as f:
-            json.dump(all_data, f, ensure_ascii=False, indent=2)
+
+        # 3. 写入文件（如果是第一次，open('w') 会自动创建文件）
+        try:
+            with open(self.profile_path, 'w', encoding='utf-8') as f:
+                json.dump(all_data, f, ensure_ascii=False, indent=2)
+            print(f"[Memory] 已成功保存到 {self.profile_path}") # 添加这行调试打印
+        except Exception as e:
+            print(f"[Memory Error] 保存文件失败: {e}")
 
     def add_message(self, role, content):
         self.short_term_history.append({"role": role, "content": content})
