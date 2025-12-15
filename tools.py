@@ -35,6 +35,27 @@ class ToolRegistry:
             return self.tools[name](**kwargs)
         return f"Error: Tool {name} not found."
 
+def save_user_info_func(key: str, value: str):
+    # 这个函数只是为了占位，实际逻辑在 Agent.py 里处理，
+    # 因为那里才能访问到具体的 self.memory 对象
+    return f"已将用户 {key} 更新为 {value}"
+
+registry.register(
+    func=save_user_info_func,
+    name="save_user_info",
+    description="当用户提到自己的个人信息（如姓名、职业、爱好、所在城市）时，**必须**调用此工具将其保存到长期记忆中。",
+    parameters={
+        "type": "object",
+        "properties": {
+            "key": {"type": "string", "description": "信息的类别，如：name, location, hobby, job"},
+            "value": {"type": "string", "description": "具体的内容，如：张三, 北京, 喜欢游泳"}
+        },
+        "required": ["key", "value"]
+    }
+)
+
+
+
 def internet_search_func(query: str):
     print(f"\n[System] 正在联网搜索: {query} ...")
     results = []
